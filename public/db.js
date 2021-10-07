@@ -1,29 +1,32 @@
 let db;
-let budgetVersion;
 
-const request = indexedDB.open('BudgetDB', budgetVersion || 21);
+const request = indexedDB.open("BudgetTrackerDB");
 
-request.onupgradeneeded = function (e) {
-    console.log('Upgrade needed in IndexDB');
+request.onupgradeneeded = function (event) {
+    db = event.target.result;
+    db.createObjectStore('BudgetStore', { autoIncrement: true });
+};
 
-    const { oldVersion } = e;
-    const newVersion = e.newVersion || db.version;
+request.onsuccess = function (event) {
+    db = event.target.result;
 
-    console.log(`DB Updated from version ${oldVersion} to ${newVersion}`);
-
-    db = e.target.result;
-    if (db.objectStoreNames.length === 0) {
-        db.createObjectStore('BudgetStore', { autoIncrement: true });
+    if (navigator.onLine) {
+        checkDatabase();
     }
 };
 
-request.onerror = function (e) {
-    console.log(`Woops! ${e.target.errorCode}`);
+request.onerror = function (event) {
+    console.log(event.target.errorCode);
 };
 
+function saveRecord(record) {
+    const transaction = db.transaction(['BudgetStore'], 'readwrite')
+    const store = transaction.objectStore('BudgetStore');
+    store.add(record);
+}
+
 function checkDatabase() {
-    console.log('check db invoked');
-    let transaction = db.transaction(['BudgetStore'], 'readwrite');
+    const transaction = db.transaction(['BudgetStore'], 'readwrite')
     const store = transaction.objectStore('BudgetStore');
     const getAll = store.getAll();
 
@@ -38,24 +41,14 @@ function checkDatabase() {
                 },
             })
                 .then((response) => response.json())
-                .then((res) => {
-                    if (res.length !== 0) {
-                        transaction = db.transaction(['BudgetStore'], 'readwrite');
-                        const currentStore = transaction.objectStore('BudgetStore');
-                        currentStore.clear();
-                        console.log('Clearing store 🧹');
-                    }
+                .then(() => {
+                    const transaction = db.transaction(['BudgetStore'], 'readwrite')
+                    const store = transaction.objectStore('BudgetStore');
+                    store.clear();
                 });
         }
     };
 }
 
-
-const saveRecord = (record) => {
-    console.log('Save record invoked');
-    const transaction = db.transaction(['BudgetStore'], 'readwrite');
-    const store = transaction.objectStore('BudgetStore');
-    store.add(record);
-};
-
+// listen for app coming back online
 window.addEventListener('online', checkDatabase);
