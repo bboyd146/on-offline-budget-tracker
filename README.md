@@ -1,6 +1,9 @@
 # on-offline-budget-tracker
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+![intense-mountain-44618 herokuapp com_](https://user-images.githubusercontent.com/82745040/136494343-76faef4b-e24a-4f26-b76a-017209ab8f90.png)
+
+
 ## Description
 This project is designed to allow a user to budget their finances by adding or deducting funds. This is a PWA which allows a user to have all functionality of the application on or offline. If the user loses connection for any reason, their data is stored and is retrieved once back online.
 
@@ -18,8 +21,6 @@ This project is designed to allow a user to budget their finances by adding or d
 You can activate this app by Click the deployed link below.
 
 ## Usage 
-
-![intense-mountain-44618 herokuapp com_](https://user-images.githubusercontent.com/82745040/136494343-76faef4b-e24a-4f26-b76a-017209ab8f90.png)
 
 
 ## License 
